@@ -229,7 +229,7 @@ const SEED_CLASES=[
 let S={};try{S=JSON.parse(localStorage.getItem("spt")||"{}")}catch(e){}
 S.p=S.p||{};S.r=S.r||[];S.u=S.u||null;S.users=S.users||[];S.t=S.t||"";S.pe=S.pe||"";
 // ▼ Datos del responsable para el aviso de privacidad. Complétalos antes de publicar.
-const TITULAR="Emanuel Marzano Villalobos",DOMICILIO="[escribe aquí tu domicilio]",CONTACTO="[escribe aquí tu correo de contacto]",PAGO_DATOS="[escribe aquí los datos para recibir pagos: banco, CLABE y nombre]";
+let TITULAR="Emanuel Marzano Villalobos",DOMICILIO="[escribe aquí tu domicilio]",CONTACTO="[escribe aquí tu correo de contacto]",PAGO_DATOS="[escribe aquí los datos para recibir pagos: banco, CLABE y nombre]";
 // ▼ Tu WhatsApp para ayuda (con lada de país, solo números, por ejemplo 5215512345678). Si lo dejas vacío, el botón no aparece.
 // ▼ DIAS_REEMBOLSO: días en los que el alumno puede pedir que le devuelvas su pago completo.
 const WHATSAPP="",DIAS_REEMBOLSO=7;
@@ -508,7 +508,9 @@ function faqHTML(){const q=[["¿Necesito saber de computación para empezar?","N
 return q.map(([a,b])=>`<details class="faq"><summary>${esc(a)}</summary><p>${esc(b)}</p></details>`).join("")}
 if(!REAL&&window.addEventListener)window.addEventListener("storage",ev=>{if(ev.key!=="spt"||!ev.newValue)return;try{const n=JSON.parse(ev.newValue),me=S.u&&S.u.e;S.users=n.users||[];S.clases=n.clases;S.temarios=n.temarios;if(aplicarTemarios(S.temarios||{})&&!document.querySelector(".back"))home();S.u=me?(S.users.find(x=>x.e===me)||null):null;hdr()}catch(e){}});
 //INICIO
-aplicarTema(temaActual());aplicarFuente();if(WHATSAPP){const a=document.getElementById("wa");a.href="https://wa.me/"+WHATSAPP.replace(/\D/g,"")+"?text="+encodeURIComponent("Hola, tengo una duda sobre Sin Prisas Tech");a.hidden=false}
+aplicarTema(temaActual());aplicarFuente();
+// Si no escribiste un correo de contacto, se usa el de tu cuenta de Google (el mismo que recibe los avisos de dudas).
+if(REAL&&CONTACTO.startsWith("[")){api({tipo:"contacto"}).then(r=>{if(r&&r.correo)CONTACTO=r.correo})}if(WHATSAPP){const a=document.getElementById("wa");a.href="https://wa.me/"+WHATSAPP.replace(/\D/g,"")+"?text="+encodeURIComponent("Hola, tengo una duda sobre Sin Prisas Tech");a.hidden=false}
 aplicarTemarios(S.temarios||{});hdr();home();refrescar();
 cargarTemarios().then(ch=>{if(ch&&!document.querySelector(".back"))home()});
 </script>
