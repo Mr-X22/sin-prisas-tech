@@ -1,16 +1,66 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sin Prisas Tech - Cursos de Computación, Celulares e Internet sin complicaciones</title>
+    <title>Sin Prisas Tech - Plataforma de Aprendizaje</title>
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Google Fonts: Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        sage: {
+                            50: '#f4f7f4',
+                            100: '#e3eae3',
+                            200: '#c7d6c8',
+                            500: '#688c6b',
+                            700: '#3e5841',
+                            900: '#233426'
+                        },
+                        accent: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        .large-text-mode {
+            font-size: 1.2rem !important;
+        }
+        .focus-accessible:focus {
+            outline: 3px solid #16a34a;
+            outline-offset: 3px;
         }
         .glass-card {
             background: rgba(255, 255, 255, 0.9);
@@ -18,179 +68,437 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-indigo-50/20 to-slate-100 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body id="appBody" class="bg-sage-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- HEADER / NAVEGACIÓN PRINCIPAL -->
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-indigo-500/20">S</div>
-                <span class="text-xl font-extrabold text-slate-900 tracking-tight">Sin Prisas Tech</span>
+    <!-- BARRA SUPERIOR DE CONMUTACIÓN DE VISTA (SIMULADOR DE ESTADOS) -->
+    <nav class="bg-slate-900 text-white px-4 py-3 sticky top-0 z-50 border-b border-slate-800 shadow-md">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 font-semibold text-slate-200">
+                <i class="fa-solid fa-sliders text-brand-400 text-base"></i>
+                <span class="hidden sm:inline">Simulador de Estado de Interfaz:</span>
             </div>
-            <nav class="hidden md:flex items-center gap-8 font-medium text-slate-600">
-                <a href="#cursos" class="hover:text-indigo-600 transition">Cursos</a>
-                <a href="#quienes-somos" class="hover:text-indigo-600 transition">Quiénes somos</a>
-                <a href="#faq" class="hover:text-indigo-600 transition">Preguntas frecuentes</a>
-                <a href="#contacto" class="hover:text-indigo-600 transition">Contacto</a>
-            </nav>
-            <div class="flex items-center gap-4">
-                <a href="#cuenta" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-4 py-2.5 rounded-xl transition">Mi cuenta</a>
+            
+            <div class="flex flex-wrap items-center bg-slate-800 p-1 rounded-xl border border-slate-700 font-bold gap-1">
+                <button id="btnStateVisitor" onclick="setAppState('visitor')" class="px-3 py-1.5 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-eye text-brand-400"></i>
+                    <span>1. Index (Visitante)</span>
+                </button>
+                <button id="btnStateStudent" onclick="setAppState('student')" class="px-3 py-1.5 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-user-graduate text-emerald-400"></i>
+                    <span>2. Index (Estudiante - Juan)</span>
+                </button>
+                <button id="btnStateTeacher" onclick="setAppState('teacher')" class="px-3 py-1.5 rounded-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-chalkboard-user text-amber-400"></i>
+                    <span>3. Panel del Maestro</span>
+                </button>
             </div>
+
+            <!-- Accesibilidad rápida -->
+            <div class="flex items-center gap-2">
+                <button onclick="toggleLargeText()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold border border-slate-700 transition" title="Aumentar tamaño de letra">
+                    <i class="fa-solid fa-font mr-1"></i> Letra Grande
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER GENERAL / BARRA DE NAVEGACIÓN PRINCIPAL -->
+    <header class="bg-white border-b border-brand-100 sticky top-[57px] z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Logo & Frase de Marca -->
+            <div class="flex items-center gap-3.5 cursor-pointer" onclick="setAppState('visitor')">
+                <div class="bg-brand-600 text-white p-3 rounded-2xl shadow-md flex items-center justify-center">
+                    <i class="fa-solid fa-laptop-medical text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 tracking-tight leading-none">
+                        Sin Prisas <span class="text-brand-600">Tech</span>
+                    </h1>
+                    <p class="text-xs font-bold text-slate-500 tracking-wide mt-1">Aprende a tu ritmo</p>
+                </div>
+            </div>
+
+            <!-- Búsqueda General -->
+            <div class="hidden md:flex flex-1 max-w-md mx-6">
+                <div class="relative w-full">
+                    <input type="text" id="globalSearchInput" oninput="handleSearch(this.value)" placeholder="Buscar cursos (ej. Windows 11, Correo)..." 
+                        class="w-full pl-11 pr-4 py-2.5 bg-brand-50/50 border border-brand-200 rounded-xl focus-accessible text-slate-800 placeholder-slate-400 text-sm font-normal">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-brand-600"></i>
+                </div>
+            </div>
+
+            <!-- Menú Superior Dinámico -->
+            <div class="flex items-center gap-3" id="headerAuthArea">
+                <!-- Se llena dinámicamente con JS -->
+            </div>
+
         </div>
     </header>
 
-    <main>
-        <!-- HERO / SECCIÓN PRINCIPAL DE BIENVENIDA -->
-        <section class="max-w-6xl mx-auto px-6 pt-16 pb-12 text-center md:text-left grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div class="space-y-6">
-                <span class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full border border-indigo-100">
-                    ✨ Aprendizaje 100% paciente y guiado
-                </span>
-                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                    Domina la tecnología a tu propio ritmo
-                </h1>
-                <p class="text-lg text-slate-600 leading-relaxed">
-                    Aprende a usar tu computadora, celular e internet paso a paso, sin tecnicismos y con el apoyo cercano que necesitas.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
-                    <a href="#cursos" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg shadow-indigo-600/25 transition text-center text-base">
-                        Ver cursos disponibles
-                    </a>
-                    <a href="#contacto" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold py-4 px-8 rounded-2xl transition text-center text-base shadow-xs">
-                        Pedir orientación
-                    </a>
-                </div>
-            </div>
-            <div class="relative">
-                <div class="w-full h-80 md:h-96 bg-gradient-to-tr from-indigo-100 to-sky-100 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-inner border border-white">
-                    <div class="w-20 h-20 rounded-3xl bg-indigo-600 text-white flex items-center justify-center text-3xl font-bold mb-4 shadow-lg shadow-indigo-500/30">💻</div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Clases en vivo y grabadas</h3>
-                    <p class="text-slate-600 text-base max-w-sm">Explicaciones claras con pantallas grandes, guías descargables y atención personal en cada sesión.</p>
-                </div>
-            </div>
-        </section>
+    <!-- CONTENIDO PRINCIPAL ADAPTATIVO -->
+    
+    <!-- CONTENEDOR 1: VISTA DE INDEX (VISITANTE / ALUMNO) -->
+    <div id="viewIndex" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        <!-- SECCIÓN DE CURSOS DESTACADOS -->
-        <section id="cursos" class="max-w-6xl mx-auto px-6 py-16">
-            <div class="text-center max-w-2xl mx-auto mb-12 space-y-3">
-                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Nuestros cursos principales</h2>
-                <p class="text-slate-600 text-lg">Diseñados desde cero para darte total autonomía y confianza.</p>
-            </div>
+        <!-- COLUMNA IZQUIERDA: MENÚ LATERAL (SIDEBAR) -->
+        <aside class="lg:col-span-3 space-y-6">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Curso 1 -->
-                <div class="bg-white border border-slate-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
-                    <div>
-                        <span class="inline-block bg-sky-50 text-sky-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">Computación</span>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Mi primera computadora</h3>
-                        <p class="text-slate-600 text-base mb-6">Conoce las partes de tu equipo, domina el mouse y el teclado, abre programas y guarda tus archivos sin miedo.</p>
-                    </div>
-                    <a href="#" class="w-full text-center bg-slate-900 hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-xl transition text-base shadow-xs">
-                        Ver detalles del curso
-                    </a>
-                </div>
-
-                <!-- Curso 2 -->
-                <div class="bg-white border border-slate-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
-                    <div>
-                        <span class="inline-block bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">Celular</span>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Mi celular paso a paso</h3>
-                        <p class="text-slate-600 text-base mb-6">Domina llamadas, contactos, mensajes, WhatsApp y aprende a tomar y compartir fotografías con tus seres queridos.</p>
-                    </div>
-                    <a href="#" class="w-full text-center bg-slate-900 hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-xl transition text-base shadow-xs">
-                        Ver detalles del curso
-                    </a>
-                </div>
-
-                <!-- Curso 3 -->
-                <div class="bg-white border border-slate-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
-                    <div>
-                        <span class="inline-block bg-amber-50 text-amber-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">Oficina y Utilidades</span>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Word para la vida real</h3>
-                        <p class="text-slate-600 text-base mb-6">Escribe cartas, oficios y documentos personales de manera limpia y profesional con ejercicios muy prácticos.</p>
-                    </div>
-                    <a href="#" class="w-full text-center bg-slate-900 hover:bg-indigo-600 text-white font-semibold py-3 px-6 rounded-xl transition text-base shadow-xs">
-                        Ver detalles del curso
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 1: Banner / Invitación amigable previa al footer -->
-        <section class="max-w-5xl mx-auto px-6 py-8">
-            <div class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-3xl p-10 shadow-xl shadow-indigo-500/15 text-center">
-                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute -left-10 -top-10 w-48 h-48 bg-indigo-400/20 rounded-full blur-2xl pointer-events-none"></div>
+            <!-- Navegación de Menú -->
+            <nav class="bg-white p-4 rounded-2xl border border-brand-100 shadow-sm space-y-1">
+                <a href="#" class="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-brand-50 text-brand-700 font-bold transition">
+                    <i class="fa-solid fa-house text-lg w-6 text-center text-brand-600"></i>
+                    <span>Inicio</span>
+                </a>
                 
-                <h3 class="relative text-2xl md:text-3xl font-extrabold tracking-tight mb-3">¿Tienes alguna duda antes de empezar?</h3>
-                <p class="relative text-indigo-100 text-lg md:text-xl font-medium max-w-2xl mx-auto">Estamos aquí para acompañarte paso a paso en tu aprendizaje, sin prisas y con total confianza.</p>
-            </div>
-        </section>
+                <!-- Opciones que cambian según inicio de sesión -->
+                <div id="sidebarDynamicLinks" class="space-y-1">
+                    <!-- JS inyecta según estado -->
+                </div>
+            </nav>
 
-        <!-- SECCIÓN 2: 3 Tarjetas de ayuda interactivas y estilizadas -->
-        <section class="max-w-5xl mx-auto px-6 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Categorías de Cursos -->
+            <div class="bg-white p-4 rounded-2xl border border-brand-100 shadow-sm space-y-2">
+                <p class="px-3 text-xs font-bold uppercase tracking-wider text-slate-400">Categorías</p>
+                <div class="space-y-1">
+                    <button onclick="filterCategory('all')" class="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-desktop text-brand-600 w-5 text-center"></i>
+                        <span>Todos / Computación</span>
+                    </button>
+                    <button onclick="filterCategory('internet')" class="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-globe text-brand-600 w-5 text-center"></i>
+                        <span>Internet y redes</span>
+                    </button>
+                    <button onclick="filterCategory('ofimatica')" class="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-file-lines text-brand-600 w-5 text-center"></i>
+                        <span>Ofimática</span>
+                    </button>
+                    <button onclick="filterCategory('diseno')" class="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-image text-brand-600 w-5 text-center"></i>
+                        <span>Diseño y creatividad</span>
+                    </button>
+                    <button onclick="filterCategory('seguridad')" class="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-shield-halved text-brand-600 w-5 text-center"></i>
+                        <span>Seguridad en línea</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bloque de Motivación -->
+            <div class="bg-brand-50/80 p-5 rounded-2xl border border-brand-200 text-center space-y-2">
+                <div class="w-10 h-10 bg-brand-100 text-brand-700 rounded-full flex items-center justify-center mx-auto text-xl">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+                <p class="text-sm font-extrabold text-slate-900 font-heading">Nunca es tarde para aprender algo nuevo.</p>
+                <p class="text-xs text-slate-600">Avanza paso a paso, con calma y seguridad.</p>
+            </div>
+
+        </aside>
+
+        <!-- COLUMNA CENTRAL: HERO, CATEGORÍAS Y LISTA DE CURSOS -->
+        <main class="lg:col-span-6 space-y-8">
+
+            <!-- HERO BANNER (CON ADULTOS MAYORES Y FORMATO VERDE) -->
+            <section id="heroSection" class="bg-white rounded-3xl border border-brand-100 p-6 sm:p-8 shadow-sm relative overflow-hidden">
+                <!-- Se inyecta dinámicamente con JS -->
+            </section>
+
+            <!-- CATEGORÍAS DESTACADAS EN TARJETAS CON TONOS VERDES Y SUAVES -->
+            <section class="space-y-4">
+                <h2 class="text-xl font-extrabold font-heading text-slate-900 tracking-tight">Categorías destacadas</h2>
                 
-                <!-- Tarjeta 1: Conócenos -->
-                <div id="quienes-somos" class="glass-card border border-slate-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xl mb-6 group-hover:scale-110 transition-transform">
-                            👋
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div onclick="filterCategory('all')" class="cursor-pointer bg-brand-50 border border-brand-200 hover:border-brand-400 p-4 rounded-2xl transition flex flex-col justify-between h-28 group">
+                        <i class="fa-solid fa-desktop text-brand-600 text-2xl group-hover:scale-110 transition-transform"></i>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-800 text-sm">Computación básica</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-brand-500"></i>
                         </div>
-                        <span class="inline-block bg-sky-50 text-sky-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3">Conócenos</span>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Conoce Sin Prisas Tech</h4>
-                        <p class="text-slate-600 text-base leading-relaxed mb-8">Descubre nuestra forma paciente, cercana y amigable de enseñar tecnología.</p>
                     </div>
-                    <a href="#quienes-somos" class="flex items-center justify-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white font-semibold py-3.5 px-6 rounded-2xl transition-all duration-200 text-base shadow-xs group-hover:shadow-md">
-                        <span>Saber más</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                    </a>
+
+                    <div onclick="filterCategory('internet')" class="cursor-pointer bg-emerald-50 border border-emerald-200 hover:border-emerald-400 p-4 rounded-2xl transition flex flex-col justify-between h-28 group">
+                        <i class="fa-solid fa-globe text-emerald-600 text-2xl group-hover:scale-110 transition-transform"></i>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-800 text-sm">Internet y redes</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-emerald-500"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="filterCategory('ofimatica')" class="cursor-pointer bg-teal-50 border border-teal-200 hover:border-teal-400 p-4 rounded-2xl transition flex flex-col justify-between h-28 group">
+                        <i class="fa-solid fa-file-lines text-teal-600 text-2xl group-hover:scale-110 transition-transform"></i>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-800 text-sm">Ofimática</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-teal-500"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="filterCategory('diseno')" class="cursor-pointer bg-amber-50 border border-amber-200 hover:border-amber-400 p-4 rounded-2xl transition flex flex-col justify-between h-28 group">
+                        <i class="fa-solid fa-image text-amber-600 text-2xl group-hover:scale-110 transition-transform"></i>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-800 text-sm">Diseño y creatividad</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-amber-500"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="filterCategory('seguridad')" class="cursor-pointer bg-slate-100 border border-slate-200 hover:border-brand-400 p-4 rounded-2xl transition flex flex-col justify-between h-28 group sm:col-span-2 lg:col-span-1">
+                        <i class="fa-solid fa-shield-halved text-brand-700 text-2xl group-hover:scale-110 transition-transform"></i>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-800 text-sm">Seguridad en línea</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-brand-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CURSOS POPULARES -->
+            <section class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-extrabold font-heading text-slate-900 tracking-tight" id="coursesListTitle">Cursos populares</h2>
+                    <button onclick="filterCategory('all')" class="text-sm font-bold text-brand-700 hover:underline flex items-center gap-1">
+                        <span>Ver todos los cursos</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
                 </div>
 
-                <!-- Tarjeta 2: Dudas frecuentes -->
-                <div id="faq" class="glass-card border border-slate-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xl mb-6 group-hover:scale-110 transition-transform">
-                            💡
-                        </div>
-                        <span class="inline-block bg-amber-50 text-amber-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3">Ayuda</span>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Preguntas frecuentes</h4>
-                        <p class="text-slate-600 text-base leading-relaxed mb-8">Respuestas claras y sencillas sobre pagos, horarios y acceso a clases.</p>
-                    </div>
-                    <a href="#faq" class="flex items-center justify-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white font-semibold py-3.5 px-6 rounded-2xl transition-all duration-200 text-base shadow-xs group-hover:shadow-md">
-                        <span>Ver preguntas</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                    </a>
+                <!-- Grilla de Cursos -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="coursesGrid">
+                    <!-- Inyectado por JS -->
+                </div>
+            </section>
+
+            <!-- SECCIÓN ADICIONAL EN VISTA VISITANTE: PREGUNTAS / CONTACTO (Rediseñada visualmente con tarjetas de ayuda) -->
+            <section id="wantToKnowMoreSection" class="pt-8 border-t border-brand-200 space-y-6">
+                <div class="relative overflow-hidden bg-gradient-to-r from-brand-600 to-brand-700 text-white rounded-3xl p-8 shadow-xl shadow-brand-500/10 text-center">
+                    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -left-10 -top-10 w-48 h-48 bg-brand-400/20 rounded-full blur-2xl pointer-events-none"></div>
+                    
+                    <h3 class="relative text-2xl md:text-3xl font-extrabold tracking-tight mb-2">¿Tienes alguna duda antes de empezar?</h3>
+                    <p class="relative text-brand-100 text-base md:text-lg font-medium max-w-xl mx-auto">Estamos aquí para acompañarte paso a paso en tu aprendizaje, sin prisas y con total confianza.</p>
                 </div>
 
-                <!-- Tarjeta 3: Atención personal -->
-                <div id="contacto" class="glass-card border border-slate-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl mb-6 group-hover:scale-110 transition-transform">
-                            💬
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Tarjeta 1: Conócenos -->
+                    <div class="glass-card border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">
+                                👋
+                            </div>
+                            <span class="inline-block bg-sky-50 text-sky-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3">Conócenos</span>
+                            <h4 class="text-lg font-bold text-slate-900 mb-2">Conoce Sin Prisas Tech</h4>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">Descubre nuestra forma paciente y cercana de enseñar.</p>
                         </div>
-                        <span class="inline-block bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3">Soporte</span>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Contacto y ayuda</h4>
-                        <p class="text-slate-600 text-base leading-relaxed mb-8">¿Necesitas apoyo directo? Escríbenos y te guiamos personalmente.</p>
+                        <button onclick="showInfoToast('Dirigiendo a Quiénes Somos...')" class="flex items-center justify-center gap-2 bg-slate-900 hover:bg-brand-600 text-white font-semibold py-3 px-5 rounded-2xl transition-all duration-200 text-sm shadow-sm group-hover:shadow-md">
+                            <span>Saber más</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
                     </div>
-                    <a href="#contacto" class="flex items-center justify-center gap-2 bg-slate-900 hover:bg-indigo-600 text-white font-semibold py-3.5 px-6 rounded-2xl transition-all duration-200 text-base shadow-xs group-hover:shadow-md">
-                        <span>Ir a contacto</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                    </a>
+
+                    <!-- Tarjeta 2: Dudas frecuentes -->
+                    <div class="glass-card border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">
+                                💡
+                            </div>
+                            <span class="inline-block bg-amber-50 text-amber-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3">Ayuda</span>
+                            <h4 class="text-lg font-bold text-slate-900 mb-2">Preguntas frecuentes</h4>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">Respuestas claras sobre pagos, horarios y clases.</p>
+                        </div>
+                        <button onclick="showInfoToast('Dirigiendo a Preguntas Frecuentes...')" class="flex items-center justify-center gap-2 bg-slate-900 hover:bg-brand-600 text-white font-semibold py-3 px-5 rounded-2xl transition-all duration-200 text-sm shadow-sm group-hover:shadow-md">
+                            <span>Ver preguntas</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Tarjeta 3: Atención personal -->
+                    <div class="glass-card border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">
+                                💬
+                            </div>
+                            <span class="inline-block bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3">Soporte</span>
+                            <h4 class="text-lg font-bold text-slate-900 mb-2">Contacto y ayuda</h4>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">¿Necesitas apoyo? Escríbenos y te guiamos.</p>
+                        </div>
+                        <button onclick="showInfoToast('Dirigiendo a Formulario de Contacto...')" class="flex items-center justify-center gap-2 bg-slate-900 hover:bg-brand-600 text-white font-semibold py-3 px-5 rounded-2xl transition-all duration-200 text-sm shadow-sm group-hover:shadow-md">
+                            <span>Ir a contacto</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- COLUMNA DERECHA: ADAPTATIVA (TESTIMONIOS vs PROGRESO) -->
+        <aside class="lg:col-span-3 space-y-6" id="rightSidebarArea">
+            <!-- Se inyecta por JS dinámicamente -->
+        </aside>
+
+    </div>
+
+    <!-- CONTENEDOR 2: VISTA DEL PANEL DEL MAESTRO (INSTRUCTOR INTERACTIVO Y AMPLIADO) -->
+    <div id="viewTeacher" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8 hidden">
+        
+        <!-- Header del Profesor -->
+        <div class="bg-white p-6 rounded-3xl border border-brand-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=150&q=80" 
+                    alt="Prof. Carlos Mendoza" class="w-16 h-16 rounded-2xl object-cover border-2 border-brand-500 shadow-sm">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-2xl font-extrabold font-heading text-slate-900">Prof. Carlos Mendoza</h2>
+                        <span class="px-2.5 py-0.5 bg-brand-100 text-brand-800 text-xs font-bold rounded-full">Docente Principal</span>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-0.5">Especialista en educación digital para adultos mayores</p>
+                </div>
+            </div>
+
+            <button onclick="openCreateCourseModal()" class="px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center gap-2">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Crear nuevo curso</span>
+            </button>
+        </div>
+
+        <!-- MÉTRICAS Y ESTADÍSTICAS DEL INSTRUCTOR -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 bg-brand-100 text-brand-700 rounded-2xl flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Alumnos activos</p>
+                    <p class="text-2xl font-extrabold text-slate-900 font-heading" id="statStudentsCount">142</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Cursos activos</p>
+                    <p class="text-2xl font-extrabold text-slate-900 font-heading" id="statCoursesCount">4</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-comments text-amber-600"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Dudas pendientes</p>
+                    <p class="text-2xl font-extrabold text-amber-600 font-heading" id="statPendingQuestions">3 pendientes</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 bg-teal-100 text-teal-700 rounded-2xl flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Evaluación promedio</p>
+                    <p class="text-2xl font-extrabold text-slate-900 font-heading">4.9 / 5.0 ⭐</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE ATENCIÓN A DUDAS DE LOS ALUMNOS -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Lista de Preguntas con Filtro e Interacción de Respuesta -->
+            <div class="lg:col-span-8 bg-white p-6 rounded-3xl border border-brand-100 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="text-xl font-extrabold font-heading text-slate-900">Dudas de los estudiantes</h3>
+                        <p class="text-xs text-slate-500">Responde con paciencia y lenguaje empático.</p>
+                    </div>
+
+                    <!-- Filtros de Dudas -->
+                    <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+                        <button id="btnFilterPending" onclick="setQuestionsFilter('pending')" class="px-3 py-1.5 rounded-lg bg-white shadow-sm text-brand-800">
+                            Pendientes
+                        </button>
+                        <button id="btnFilterAnswered" onclick="setQuestionsFilter('answered')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">
+                            Respondidas
+                        </button>
+                        <button id="btnFilterAll" onclick="setQuestionsFilter('all')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">
+                            Todas
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lista dinámica de preguntas -->
+                <div class="space-y-4" id="questionsList">
+                    <!-- Inyectado mediante JS -->
+                </div>
+            </div>
+
+            <!-- Panel Lateral: Gestión de Cursos y Felicitaciones -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Gestión e Historial de Cursos Creados -->
+                <div class="bg-white p-6 rounded-3xl border border-brand-100 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-extrabold font-heading text-slate-900">Mis Cursos</h3>
+                        <button onclick="openCreateCourseModal()" class="text-xs font-bold text-brand-700 hover:underline">
+                            + Crear
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-3 text-xs" id="teacherCoursesList">
+                        <!-- Inyectado con JS -->
+                    </div>
+                </div>
+
+                <!-- Enviar Felicitación / Ánimo a Alumno -->
+                <div class="bg-white p-6 rounded-3xl border border-brand-100 shadow-sm space-y-4">
+                    <div class="flex items-center gap-2 text-brand-700 font-extrabold font-heading text-base">
+                        <i class="fa-solid fa-award text-amber-500 text-xl"></i>
+                        <span>Enviar Ánimo a un Alumno</span>
+                    </div>
+                    <p class="text-xs text-slate-500">Selecciona un alumno y envíale un mensaje motivacional.</p>
+
+                    <form onsubmit="handleSendEncouragement(event)" class="space-y-3 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Seleccionar Alumno:</label>
+                            <select id="selectStudentEncourage" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-medium focus-accessible">
+                                <option value="Doña Martha (68 años)">Doña Martha (68 años) - 40% completado</option>
+                                <option value="Don Roberto (72 años)">Don Roberto (72 años) - 10% completado</option>
+                                <option value="Sra. Beatriz (65 años)">Sra. Beatriz (65 años) - ¡Curso Terminado!</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Mensaje afectuoso predeterminado:</label>
+                            <select id="selectEncouragePreset" onchange="applyEncouragePreset(this.value)" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-medium focus-accessible mb-2">
+                                <option value="¡Vas excelente! Recuerda tomar descansos y avanzar paso a paso. Estoy orgulloso de ti.">🌟 "¡Vas excelente! Avanza paso a paso..."</option>
+                                <option value="¡Muchas felicidades por tu constancia! Aprender a esta etapa es un gran logro.">🎉 "¡Muchas felicidades por tu constancia!..."</option>
+                                <option value="No te preocupes si tienes dudas, la computadora no se romperá. ¡Sigue practicando!">💚 "No te preocupes si tienes dudas, sigue practicando..."</option>
+                            </select>
+                            <textarea id="textEncourageMessage" rows="3" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-medium focus-accessible">¡Vas excelente! Recuerda tomar descansos y avanzar paso a paso. Estoy orgulloso de ti.</textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Enviar mensaje de aliento</span>
+                        </button>
+                    </form>
                 </div>
 
             </div>
-        </section>
-    </main>
 
-    <!-- SECCIÓN 3 y 4: Pie de Página (Footer) profesional reorganizado -->
+        </div>
+
+    </div>
+
+    <!-- PIE DE PÁGINA (FOOTER) REORGANIZADO EN DOS COLUMNAS VERTICALES Y ACCESIBLE -->
     <footer class="bg-slate-950 text-slate-300 pt-16 pb-12 mt-20 border-t border-slate-900">
         <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
             
             <!-- Columna de marca -->
             <div class="md:col-span-6 space-y-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-lg">S</div>
+                    <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-black text-lg">S</div>
                     <h5 class="text-xl font-bold text-white tracking-tight">Sin Prisas Tech</h5>
                 </div>
                 <p class="text-slate-400 text-base max-w-md leading-relaxed">Aprendizaje digital accesible, paciente y sin complicaciones diseñado especialmente para que disfrutes cada paso.</p>
@@ -198,26 +506,26 @@
 
             <!-- Columna de Navegación -->
             <div class="md:col-span-3 space-y-3">
-                <h6 class="text-white font-semibold text-sm uppercase tracking-wider text-indigo-400">Navegación</h6>
+                <h6 class="text-white font-semibold text-sm uppercase tracking-wider text-brand-400">Navegación</h6>
                 <ul class="space-y-2.5 text-base">
-                    <li><a href="#quienes-somos" class="hover:text-white transition-colors">Quiénes somos</a></li>
-                    <li><a href="#faq" class="hover:text-white transition-colors">Preguntas frecuentes</a></li>
-                    <li><a href="#contacto" class="hover:text-white transition-colors">Contacto</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Quiénes somos</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Preguntas frecuentes</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Contacto</a></li>
                 </ul>
             </div>
 
             <!-- Columna Legal -->
             <div class="md:col-span-3 space-y-3">
-                <h6 class="text-white font-semibold text-sm uppercase tracking-wider text-indigo-400">Legal</h6>
+                <h6 class="text-white font-semibold text-sm uppercase tracking-wider text-brand-400">Legal</h6>
                 <ul class="space-y-2.5 text-base">
-                    <li><a href="#terminos" class="hover:text-white transition-colors">Términos y condiciones</a></li>
-                    <li><a href="#privacidad" class="hover:text-white transition-colors">Aviso de privacidad</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Términos y condiciones</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Aviso de privacidad</a></li>
                 </ul>
             </div>
 
         </div>
 
-        <div class="max-w-55 mx-auto px-6 pt-8 mt-12 border-t border-slate-900/80 flex flex-col sm:flex-row items-center justify-between text-sm text-slate-500 gap-4" style="max-width: 64rem;">
+        <div class="max-w-5xl mx-auto px-6 pt-8 mt-12 border-t border-slate-900/80 flex flex-col sm:flex-row items-center justify-between text-sm text-slate-500 gap-4">
             <p>© 2026 Sin Prisas Tech. Todos los derechos reservados.</p>
             <div class="flex items-center gap-6">
                 <span class="inline-flex items-center gap-1.5 text-slate-400">
@@ -227,5 +535,927 @@
         </div>
     </footer>
 
+    <!-- MODALES Y DIÁLOGOS INTERACTIVOS -->
+
+    <!-- MODAL 1: INICIO DE SESIÓN -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-brand-100 relative">
+            <button onclick="closeLoginModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-full focus-accessible">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-brand-100 text-brand-700 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold font-heading text-slate-900">Iniciar Sesión</h3>
+                <p class="text-xs text-slate-500 mt-1">Ingresa para continuar con tus clases guardadas</p>
+            </div>
+
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Correo electrónico:</label>
+                    <input type="email" value="juan.perez@ejemplo.com" required 
+                        class="w-full p-3 bg-brand-50/30 border border-slate-300 rounded-xl focus-accessible text-sm font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Contraseña:</label>
+                    <input type="password" value="••••••••" required 
+                        class="w-full p-3 bg-brand-50/30 border border-slate-300 rounded-xl focus-accessible text-sm font-medium">
+                </div>
+
+                <div class="flex items-center justify-between text-xs">
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-600">
+                        <input type="checkbox" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                        <span>Recordarme</span>
+                    </label>
+                    <a href="#" class="text-brand-700 font-bold hover:underline">¿Olvidaste tu clave?</a>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                    <span>Entrar a mi cuenta</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                <p class="text-xs text-slate-500">¿Aún no tienes cuenta? 
+                    <button onclick="showInfoToast('Redirigiendo a registro gratis...')" class="text-brand-700 font-bold hover:underline">Regístrate gratis aquí</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: RESPONDER DUDA DE ALUMNO -->
+    <div id="replyQuestionModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-brand-100 relative">
+            <button onclick="closeReplyModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-full focus-accessible">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+
+            <div class="mb-4">
+                <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">Respuesta Paciente</span>
+                <h3 class="text-xl font-extrabold font-heading text-slate-900 mt-2" id="replyStudentName">Responder a Alumno</h3>
+                <p class="text-xs text-slate-500" id="replyCourseContext">Curso: -</p>
+            </div>
+
+            <div class="p-3 bg-brand-50 rounded-2xl border border-brand-100 text-xs text-slate-700 italic mb-4" id="replyQuestionText">
+                "Duda del alumno..."
+            </div>
+
+            <!-- Selector de plantilla rápida -->
+            <div class="mb-3">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Plantilla de respuesta sencilla:</label>
+                <select onchange="applyReplyTemplate(this.value)" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus-accessible">
+                    <option value="">-- Elige una respuesta rápida --</option>
+                    <option value="Hola, no te preocupes. Haz clic en el botón con la figura de un disco o archivo en la parte superior izquierda. ¡Tu trabajo no se borrará!">💾 Explicación para Guardar Documentos</option>
+                    <option value="Hola. Revisa la bandeja de entrada de tu correo y también la carpeta llamada 'Correo no deseado' o 'Spam'. Tarda unos 2 minutos.">✉️ Explicación para Códigos de Correo</option>
+                    <option value="Hola. Si la pantalla se pone azul o negra, presiona la tecla 'Esc' en la esquina superior izquierda de tu teclado.">⌨️ Explicación Tecla Escape / Salir</option>
+                </select>
+            </div>
+
+            <form onsubmit="handleSendReply(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Tu mensaje explicativo:</label>
+                    <textarea id="replyMessageText" rows="4" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus-accessible text-sm font-medium" placeholder="Escribe con calma y sencillez..."></textarea>
+                </div>
+
+                <!-- Simulación de respuesta en audio -->
+                <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2 text-slate-700">
+                        <i class="fa-solid fa-microphone text-brand-600 text-base"></i>
+                        <span>Adjuntar explicación en audio grabado</span>
+                    </div>
+                    <button type="button" onclick="toggleAudioRecordSim()" id="btnAudioSim" class="px-3 py-1 bg-brand-600 text-white font-bold rounded-lg hover:bg-brand-700 transition">
+                        Grabar Audio
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeReplyModal()" class="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Enviar Respuesta</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: CREAR / EDITAR CURSO -->
+    <div id="courseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-brand-100 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCourseModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-full focus-accessible">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+
+            <div class="mb-6">
+                <div class="w-10 h-10 bg-brand-100 text-brand-700 rounded-xl flex items-center justify-center mb-2 text-xl">
+                    <i class="fa-solid fa-book-medical"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold font-heading text-slate-900" id="courseModalTitle">Crear Nuevo Curso</h3>
+                <p class="text-xs text-slate-500">Diseña clases dirigidas a personas mayores con explicaciones paso a paso.</p>
+            </div>
+
+            <form onsubmit="handleSaveCourse(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Título del curso:</label>
+                    <input type="text" id="courseInputTitle" required placeholder="Ej. WhatsApp para mantenerse en contacto" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus-accessible text-sm font-medium">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Categoría:</label>
+                        <select id="courseInputCategory" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus-accessible font-medium">
+                            <option value="all">Computación Básica</option>
+                            <option value="internet">Internet y Redes</option>
+                            <option value="ofimatica">Ofimática</option>
+                            <option value="diseno">Diseño y Creatividad</option>
+                            <option value="seguridad">Seguridad en Línea</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Duración estimada:</label>
+                        <input type="text" id="courseInputDuration" required placeholder="Ej. 3 h" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus-accessible font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Descripción clara y sencilla:</label>
+                    <textarea id="courseInputDesc" rows="3" required placeholder="Explica qué aprenderá el alumno sin usar tecnicismos..." class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus-accessible font-medium"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">URL de la imagen del curso:</label>
+                    <input type="url" id="courseInputImage" required value="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=500&q=80" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl focus-accessible font-medium">
+                </div>
+
+                <!-- Lista de Lecciones -->
+                <div class="p-4 bg-brand-50/60 rounded-2xl border border-brand-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-800">Lecciones incluidas:</span>
+                        <button type="button" onclick="addLessonInputRow()" class="text-brand-700 font-bold hover:underline">+ Agregar lección</button>
+                    </div>
+                    <div id="lessonsListInputs" class="space-y-2">
+                        <input type="text" class="lesson-item-input w-full p-2 bg-white border border-slate-200 rounded-lg text-xs" value="Lección 1: Encendido y primeros pasos con la aplicación" required>
+                        <input type="text" class="lesson-item-input w-full p-2 bg-white border border-slate-200 rounded-lg text-xs" value="Lección 2: Práctica guiada con calma" required>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3">
+                    <button type="button" onclick="closeCourseModal()" class="px-4 py-2.5 text-slate-600 hover:bg-slate-100 rounded-xl font-bold">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md transition">
+                        Guardar y Publicar Curso
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICACIÓN -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl z-50 hidden flex items-center gap-3 border border-slate-700 text-sm">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg" id="toastIcon"></i>
+        <span id="toastMessage">Acción realizada con éxito.</span>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT DE INTERACCIONES Y ESTADOS -->
+    <script>
+        // ESTADO GENERAL DE LA APLICACIÓN
+        let appState = 'visitor'; // 'visitor', 'student', 'teacher'
+        let currentCategoryFilter = 'all';
+        let questionsFilter = 'pending'; // 'pending', 'answered', 'all'
+        let activeReplyingQuestionId = null;
+        let isEditingCourseId = null;
+        let isAudioSimRecording = false;
+
+        // BASE DE DATOS MOCK DE CURSOS DENTRO DEL PROTOTIPO
+        let coursesData = [
+            {
+                id: 'win11',
+                title: 'Introducción a Windows 11',
+                category: 'all',
+                desc: 'Aprende a usar tu computadora de forma fácil y segura sin miedo a desconfigurar nada.',
+                level: 'Principiante',
+                duration: '4 h',
+                image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80',
+                studentEnrolled: true,
+                progressPercent: 40,
+                status: 'Publicado',
+                lessons: ['1. Conociendo el ratón', '2. El escritorio', '3. Crear carpetas']
+            },
+            {
+                id: 'email',
+                title: 'Correo electrónico paso a paso',
+                category: 'internet',
+                desc: 'Envía, recibe y organiza tus correos familiares y de trámites sin complicaciones.',
+                level: 'Principiante',
+                duration: '3 h',
+                image: 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?auto=format&fit=crop&w=500&q=80',
+                studentEnrolled: true,
+                progressPercent: 10,
+                status: 'Publicado',
+                lessons: ['1. Abrir cuenta Gmail', '2. Redactar mensaje', '3. Adjuntar fotos']
+            },
+            {
+                id: 'office',
+                title: 'Microsoft Office básico',
+                category: 'ofimatica',
+                desc: 'Crea documentos simples, listas de tareas y redacta cartas personales.',
+                level: 'Principiante',
+                duration: '6 h',
+                image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=500&q=80',
+                studentEnrolled: false,
+                progressPercent: 0,
+                status: 'Publicado',
+                lessons: ['1. Escribir texto', '2. Guardar archivo', '3. Imprimir']
+            },
+            {
+                id: 'internet',
+                title: 'Navegar en Internet seguro',
+                category: 'seguridad',
+                desc: 'Busca información útil, accede a páginas oficiales de noticias y mantente conectado sin riesgos.',
+                level: 'Principiante',
+                duration: '4 h',
+                image: 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?auto=format&fit=crop&w=500&q=80',
+                studentEnrolled: true,
+                progressPercent: 25,
+                status: 'Publicado',
+                lessons: ['1. Usar el navegador', '2. Evitar fraudes', '3. Buscar recetas y videos']
+            }
+        ];
+
+        // BASE DE DATOS DE DUDAS DE ALUMNOS
+        let studentQuestions = [
+            {
+                id: 1,
+                studentName: 'Doña Martha (68 años)',
+                courseName: 'Introducción a Windows 11',
+                timeAgo: 'Hace 25 min',
+                question: 'Profesor, ¿dónde queda el botón para guardar mi documento en el Bloc de notas? Me da miedo cerrarlo y perder mi receta.',
+                status: 'pending',
+                answer: null,
+                hasAudio: false
+            },
+            {
+                id: 2,
+                studentName: 'Don Roberto (72 años)',
+                courseName: 'Correo electrónico paso a paso',
+                timeAgo: 'Hace 2 horas',
+                question: 'Profe, no me llega el código para entrar a mi correo de Gmail. ¿Tengo que esperar más tiempo?',
+                status: 'pending',
+                answer: null,
+                hasAudio: false
+            },
+            {
+                id: 3,
+                studentName: 'Sra. Beatriz (65 años)',
+                courseName: 'Navegar en Internet seguro',
+                timeAgo: 'Hace 1 día',
+                question: '¿Es seguro abrir los enlaces que me mandan mis amigos por WhatsApp en la computadora?',
+                status: 'pending',
+                answer: null,
+                hasAudio: false
+            },
+            {
+                id: 4,
+                studentName: 'Don Gonzalo (70 años)',
+                courseName: 'Microsoft Office básico',
+                timeAgo: 'Hace 2 días',
+                question: '¿Cómo puedo hacer la letra más grande en Word? Me cuesta un poquito leerla.',
+                status: 'answered',
+                answer: 'Hola Don Gonzalo. Seleccione el texto y arriba busque el número (normalmente 12) y cámbielo a 16 o 18. ¡Se verá mucho más claro!',
+                hasAudio: true
+            }
+        ];
+
+        // INICIALIZACIÓN
+        window.onload = function() {
+            setAppState('visitor');
+        };
+
+        function toggleLargeText() {
+            document.body.classList.toggle('large-text-mode');
+        }
+
+        function showInfoToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // CAMBIO DE ESTADO EN EL SIMULADOR
+        function setAppState(newState) {
+            appState = newState;
+
+            const btnV = document.getElementById('btnStateVisitor');
+            const btnS = document.getElementById('btnStateStudent');
+            const btnT = document.getElementById('btnStateTeacher');
+
+            const viewIndex = document.getElementById('viewIndex');
+            const viewTeacher = document.getElementById('viewTeacher');
+
+            btnV.className = "px-3 py-1.5 text-slate-300 hover:text-white rounded-lg flex items-center gap-2";
+            btnS.className = "px-3 py-1.5 text-slate-300 hover:text-white rounded-lg flex items-center gap-2";
+            btnT.className = "px-3 py-1.5 text-slate-300 hover:text-white rounded-lg flex items-center gap-2";
+
+            if (appState === 'visitor') {
+                btnV.className = "px-3 py-1.5 bg-brand-600 text-white rounded-lg font-bold shadow-sm flex items-center gap-2";
+                viewIndex.classList.remove('hidden');
+                viewTeacher.classList.add('hidden');
+                document.getElementById('wantToKnowMoreSection').classList.remove('hidden');
+            } else if (appState === 'student') {
+                btnS.className = "px-3 py-1.5 bg-emerald-600 text-white rounded-lg font-bold shadow-sm flex items-center gap-2";
+                viewIndex.classList.remove('hidden');
+                viewTeacher.classList.add('hidden');
+                document.getElementById('wantToKnowMoreSection').classList.add('hidden');
+            } else if (appState === 'teacher') {
+                btnT.className = "px-3 py-1.5 bg-amber-600 text-white rounded-lg font-bold shadow-sm flex items-center gap-2";
+                viewIndex.classList.add('hidden');
+                viewTeacher.classList.remove('hidden');
+                renderTeacherDashboard();
+            }
+
+            renderHeaderAuth();
+            if (appState !== 'teacher') {
+                renderSidebarLinks();
+                renderHero();
+                renderCoursesGrid();
+                renderRightSidebar();
+            }
+        }
+
+        // RENDER HEADER
+        function renderHeaderAuth() {
+            const area = document.getElementById('headerAuthArea');
+
+            if (appState === 'visitor') {
+                area.innerHTML = `
+                    <button onclick="openLoginModal()" class="px-4 py-2 text-slate-700 font-bold hover:text-brand-700 text-sm rounded-xl transition">
+                        Iniciar sesión
+                    </button>
+                    <button onclick="openLoginModal()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-sm transition">
+                        Crear cuenta gratis
+                    </button>
+                `;
+            } else if (appState === 'student') {
+                area.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-brand-100 text-brand-700 rounded-full flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-100 p-1.5 pr-4 rounded-full border border-slate-200">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
+                                alt="Juan" class="w-8 h-8 rounded-full object-cover">
+                            <span class="text-sm font-bold text-slate-800">Hola, Juan</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+                        </div>
+                    </div>
+                `;
+            } else {
+                area.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">Modo Instructor</span>
+                        <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=120&q=80" 
+                            alt="Profesor" class="w-9 h-9 rounded-full object-cover border-2 border-brand-500">
+                    </div>
+                `;
+            }
+        }
+
+        // RENDER SIDEBAR LINKS
+        function renderSidebarLinks() {
+            const container = document.getElementById('sidebarDynamicLinks');
+
+            if (appState === 'student') {
+                container.innerHTML = `
+                    <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-book-open text-brand-600 w-5 text-center"></i>
+                        <span>Mis cursos</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-star text-amber-500 w-5 text-center"></i>
+                        <span>Favoritos</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-chart-line text-brand-600 w-5 text-center"></i>
+                        <span>Mi progreso</span>
+                    </a>
+                `;
+            } else {
+                container.innerHTML = `
+                    <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-graduation-cap text-brand-600 w-5 text-center"></i>
+                        <span>Cursos disponibles</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-700 hover:bg-brand-50 font-medium transition text-sm">
+                        <i class="fa-solid fa-circle-info text-brand-600 w-5 text-center"></i>
+                        <span>Quiénes somos</span>
+                    </a>
+                `;
+            }
+        }
+
+        // RENDER HERO
+        function renderHero() {
+            const hero = document.getElementById('heroSection');
+
+            if (appState === 'student') {
+                hero.innerHTML = `
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="space-y-3 max-w-lg">
+                            <span class="inline-block px-3.5 py-1 bg-brand-100 text-brand-800 font-bold text-xs rounded-full">
+                                ¡Bienvenido de nuevo, Juan!
+                            </span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 tracking-tight">
+                                Continúa con tu aprendizaje
+                            </h2>
+                            <p class="text-slate-600 text-sm">
+                                Vas muy bien en "Introducción a Windows 11". Completa la siguiente lección a tu propio ritmo.
+                            </p>
+                            <button onclick="showInfoToast('Reanudando última lección...')" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                                <i class="fa-solid fa-play"></i>
+                                <span>Continuar lección actual</span>
+                            </button>
+                        </div>
+                        <div class="w-full md:w-56 h-36 rounded-2xl overflow-hidden border border-brand-200 shadow-inner flex-shrink-0 relative">
+                            <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80" 
+                                alt="Windows 11" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-slate-900/30 flex items-center justify-center">
+                                <i class="fa-solid fa-circle-play text-white text-4xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                hero.innerHTML = `
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="space-y-4 max-w-md">
+                            <h2 class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 tracking-tight leading-snug">
+                                La tecnología también es para ti
+                            </h2>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                Aprende paso a paso, desde lo más básico, y descubre todo lo que puedes hacer con la tecnología sin frustraciones.
+                            </p>
+                            <div class="pt-2">
+                                <button onclick="openLoginModal()" class="px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                                    <span>Explora nuestros cursos</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full md:w-64 rounded-2xl overflow-hidden border border-brand-200 shadow-sm relative group">
+                            <img src="https://images.unsplash.com/photo-1581579438747-1dc8d1e05d98?auto=format&fit=crop&w=600&q=80" 
+                                alt="Adultos Mayores aprendiendo" class="w-full h-48 object-cover">
+                            <div class="p-2.5 bg-brand-900/80 text-white text-center text-xs italic font-medium absolute bottom-0 inset-x-0">
+                                "Tu tiempo, tu ritmo, tu aprendizaje"
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // FILTRADO Y RENDER DE CURSOS
+        function filterCategory(cat) {
+            currentCategoryFilter = cat;
+            renderCoursesGrid();
+        }
+
+        function handleSearch(val) {
+            renderCoursesGrid(val.toLowerCase());
+        }
+
+        function renderCoursesGrid(searchTerm = '') {
+            const container = document.getElementById('coursesGrid');
+
+            let filtered = coursesData.filter(c => c.status === 'Publicado');
+            if (currentCategoryFilter !== 'all') {
+                filtered = filtered.filter(c => c.category === currentCategoryFilter);
+            }
+            if (searchTerm) {
+                filtered = filtered.filter(c => c.title.toLowerCase().includes(searchTerm) || c.desc.toLowerCase().includes(searchTerm));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 bg-white p-8 rounded-2xl border border-brand-100 text-center space-y-2">
+                        <i class="fa-solid fa-book-open text-3xl text-slate-300"></i>
+                        <p class="text-sm font-bold text-slate-700">No se encontraron cursos en esta categoría.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(course => `
+                <div class="bg-white rounded-2xl border border-brand-100 overflow-hidden shadow-sm flex flex-col justify-between hover:border-brand-400 transition">
+                    <div>
+                        <img src="${course.image}" alt="${course.title}" class="w-full h-32 object-cover">
+                        <div class="p-4 space-y-2">
+                            <div class="flex items-center justify-between text-xs text-slate-500 font-medium">
+                                <span><i class="fa-solid fa-signal text-brand-600 mr-1"></i>${course.level}</span>
+                                <span><i class="fa-regular fa-clock mr-1"></i>${course.duration}</span>
+                            </div>
+                            <h3 class="font-bold font-heading text-slate-900 text-base leading-tight">${course.title}</h3>
+                            <p class="text-xs text-slate-600 line-clamp-2">${course.desc}</p>
+                            
+                            ${appState === 'student' && course.studentEnrolled ? `
+                                <div class="pt-2">
+                                    <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                                        <span class="text-brand-700">Inscrito</span>
+                                        <span>${course.progressPercent}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-brand-600 h-full rounded-full" style="width: ${course.progressPercent}%"></div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <div class="p-4 pt-0">
+                        <button onclick="showInfoToast('Abriendo ${course.title}')" 
+                            class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl transition">
+                            ${appState === 'student' && course.studentEnrolled ? 'Continuar lección' : 'Ver curso'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // RENDER COLUMNA DERECHA
+        function renderRightSidebar() {
+            const container = document.getElementById('rightSidebarArea');
+
+            if (appState === 'student') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm space-y-3">
+                        <div class="flex items-center gap-3">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
+                                alt="Juan" class="w-12 h-12 rounded-full object-cover border-2 border-brand-500">
+                            <div>
+                                <h4 class="font-extrabold font-heading text-slate-900 text-base">¡Bienvenido, Juan!</h4>
+                                <p class="text-xs text-slate-500">Tú puedes, paso a paso.</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                                <span>Tu progreso general</span>
+                                <span class="text-brand-700">25%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                <div class="bg-brand-600 h-full rounded-full" style="width: 25%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-50 p-5 rounded-2xl border border-brand-200 space-y-3">
+                        <div class="flex items-center gap-2 text-brand-800 font-bold text-sm">
+                            <i class="fa-solid fa-lightbulb text-lg text-brand-600"></i>
+                            <span>¿Necesitas ayuda?</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">Consulta nuestras guías o escríbenos si tienes dudas con tu clase.</p>
+                        <button onclick="showInfoToast('Abriendo centro de ayuda...')" class="w-full py-2 bg-white border border-brand-200 text-brand-800 font-bold text-xs rounded-xl hover:bg-brand-100 transition">
+                            Ver ayuda
+                        </button>
+                    </div>
+
+                    <div class="bg-brand-700 text-white p-4 rounded-2xl text-center space-y-1 shadow-sm">
+                        <i class="fa-solid fa-heart text-2xl text-brand-200"></i>
+                        <p class="text-xs font-bold">Porque nunca es tarde para aprender.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-brand-100 shadow-sm space-y-4">
+                        <h4 class="font-bold font-heading text-slate-900 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-comments text-brand-600"></i>
+                            <span>Lo que dicen los alumnos</span>
+                        </h4>
+
+                        <div class="space-y-3">
+                            <div class="bg-brand-50/60 p-3 rounded-xl border border-brand-100 text-xs space-y-1">
+                                <p class="text-slate-700 italic">"Gracias a Sin Prisas Tech ya hablo por videollamada con mis nietos sin pedir ayuda."</p>
+                                <p class="text-brand-800 font-bold text-[11px]">— Doña Carmen (67 años)</p>
+                            </div>
+
+                            <div class="bg-brand-50/60 p-3 rounded-xl border border-brand-100 text-xs space-y-1">
+                                <p class="text-slate-700 italic">"Los videos van despacio y repiten lo importante. Me quitó el miedo a la computadora."</p>
+                                <p class="text-brand-800 font-bold text-[11px]">— Don Fernando (73 años)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200 space-y-2">
+                        <h4 class="font-bold text-emerald-900 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-shield-check text-emerald-600"></i>
+                            <span>Aprender sin sorpresas</span>
+                        </h4>
+                        <ul class="text-xs text-emerald-800 space-y-1.5 list-disc list-inside">
+                            <li>Sin cobros automáticos ocultos.</li>
+                            <li>Clases pausables a tu propio ritmo.</li>
+                            <li>Soporte paciente y cercano.</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        // FUNCIONES AMPLIADAS DEL PANEL DEL MAESTRO
+        function renderTeacherDashboard() {
+            updateTeacherStats();
+            renderTeacherQuestionsList();
+            renderTeacherCoursesList();
+        }
+
+        function updateTeacherStats() {
+            const pendingCount = studentQuestions.filter(q => q.status === 'pending').length;
+            document.getElementById('statPendingQuestions').textContent = `${pendingCount} pendientes`;
+            document.getElementById('statCoursesCount').textContent = coursesData.length;
+        }
+
+        function setQuestionsFilter(filter) {
+            questionsFilter = filter;
+            document.getElementById('btnFilterPending').className = filter === 'pending' ? 'px-3 py-1.5 rounded-lg bg-white shadow-sm text-brand-800 font-bold' : 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-bold';
+            document.getElementById('btnFilterAnswered').className = filter === 'answered' ? 'px-3 py-1.5 rounded-lg bg-white shadow-sm text-brand-800 font-bold' : 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-bold';
+            document.getElementById('btnFilterAll').className = filter === 'all' ? 'px-3 py-1.5 rounded-lg bg-white shadow-sm text-brand-800 font-bold' : 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-bold';
+            renderTeacherQuestionsList();
+        }
+
+        function renderTeacherQuestionsList() {
+            const container = document.getElementById('questionsList');
+
+            let filtered = studentQuestions;
+            if (questionsFilter === 'pending') {
+                filtered = studentQuestions.filter(q => q.status === 'pending');
+            } else if (questionsFilter === 'answered') {
+                filtered = studentQuestions.filter(q => q.status === 'answered');
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center bg-brand-50/30 rounded-2xl border border-brand-100">
+                        <i class="fa-solid fa-circle-check text-2xl text-brand-600 mb-1"></i>
+                        <p class="text-sm font-bold text-slate-700">No hay dudas en esta lista.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(q => `
+                <div class="p-4 bg-brand-50/50 rounded-2xl border border-brand-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-full ${q.status === 'pending' ? 'bg-amber-200 text-amber-900' : 'bg-emerald-200 text-emerald-900'} flex items-center justify-center font-bold text-xs">
+                                ${q.studentName.substring(0,2)}
+                            </span>
+                            <div>
+                                <p class="text-xs font-bold text-slate-900">${q.studentName}</p>
+                                <p class="text-[11px] text-slate-500">Curso: ${q.courseName}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] text-slate-400">${q.timeAgo}</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full ${q.status === 'pending' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                                ${q.status === 'pending' ? 'Pendiente' : 'Respondida'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-slate-700 bg-white p-3 rounded-xl border border-slate-200">
+                        "${q.question}"
+                    </p>
+
+                    ${q.status === 'answered' ? `
+                        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-900 space-y-1">
+                            <div class="flex items-center justify-between font-bold">
+                                <span>Tu Respuesta:</span>
+                                ${q.hasAudio ? '<span class="text-[10px] bg-emerald-200 px-2 py-0.5 rounded-md"><i class="fa-solid fa-microphone mr-1"></i>Con Audio</span>' : ''}
+                            </div>
+                            <p>${q.answer}</p>
+                        </div>
+                    ` : `
+                        <div class="flex items-center justify-end">
+                            <button onclick="openReplyModal(${q.id})" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                                <i class="fa-solid fa-reply"></i>
+                                <span>Responder paciente</span>
+                            </button>
+                        </div>
+                    `}
+                </div>
+            `).join('');
+        }
+
+        function openReplyModal(qId) {
+            activeReplyingQuestionId = qId;
+            const q = studentQuestions.find(item => item.id === qId);
+            if (!q) return;
+
+            document.getElementById('replyStudentName').textContent = `Responder a ${q.studentName}`;
+            document.getElementById('replyCourseContext').textContent = `Curso: ${q.courseName}`;
+            document.getElementById('replyQuestionText').textContent = `"${q.question}"`;
+            document.getElementById('replyMessageText').value = '';
+            isAudioSimRecording = false;
+            document.getElementById('btnAudioSim').className = "px-3 py-1 bg-brand-600 text-white font-bold rounded-lg hover:bg-brand-700 transition";
+            document.getElementById('btnAudioSim').textContent = "Grabar Audio";
+
+            document.getElementById('replyQuestionModal').classList.remove('hidden');
+        }
+
+        function closeReplyModal() {
+            document.getElementById('replyQuestionModal').classList.add('hidden');
+        }
+
+        function applyReplyTemplate(val) {
+            if (val) {
+                document.getElementById('replyMessageText').value = val;
+            }
+        }
+
+        function toggleAudioRecordSim() {
+            isAudioSimRecording = !isAudioSimRecording;
+            const btn = document.getElementById('btnAudioSim');
+            if (isAudioSimRecording) {
+                btn.className = "px-3 py-1 bg-red-600 text-white font-bold rounded-lg animate-pulse transition";
+                btn.textContent = "⏺ Grabando (12s)...";
+            } else {
+                btn.className = "px-3 py-1 bg-emerald-600 text-white font-bold rounded-lg transition";
+                btn.textContent = "✓ Audio Adjuntado";
+            }
+        }
+
+        function handleSendReply(e) {
+            e.preventDefault();
+            const msg = document.getElementById('replyMessageText').value;
+            const q = studentQuestions.find(item => item.id === activeReplyingQuestionId);
+            if (q) {
+                q.status = 'answered';
+                q.answer = msg;
+                q.hasAudio = isAudioSimRecording;
+            }
+
+            closeReplyModal();
+            renderTeacherDashboard();
+            showInfoToast('Respuesta enviada con éxito al alumno.');
+        }
+
+        function renderTeacherCoursesList() {
+            const container = document.getElementById('teacherCoursesList');
+
+            container.innerHTML = coursesData.map(c => `
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-slate-900 truncate">${c.title}</p>
+                        <p class="text-slate-500 text-[11px]">${c.duration} • <span class="${c.status === 'Publicado' ? 'text-emerald-700 font-bold' : 'text-amber-600'}">${c.status}</span></p>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="toggleCourseStatus('${c.id}')" class="p-1.5 text-slate-600 hover:text-brand-700 font-bold" title="Cambiar estado Publicado/Borrador">
+                            <i class="fa-solid fa-rotate text-xs"></i>
+                        </button>
+                        <button onclick="openEditCourseModal('${c.id}')" class="p-1.5 text-brand-700 font-bold hover:bg-brand-100 rounded-lg">
+                            Editar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCourseStatus(courseId) {
+            const c = coursesData.find(item => item.id === courseId);
+            if (c) {
+                c.status = c.status === 'Publicado' ? 'Borrador' : 'Publicado';
+                renderTeacherDashboard();
+                renderCoursesGrid();
+                showInfoToast(`Estado del curso actualizado a: ${c.status}`);
+            }
+        }
+
+        function openCreateCourseModal() {
+            isEditingCourseId = null;
+            document.getElementById('courseModalTitle').textContent = 'Crear Nuevo Curso';
+            document.getElementById('courseInputTitle').value = '';
+            document.getElementById('courseInputCategory').value = 'all';
+            document.getElementById('courseInputDuration').value = '3 h';
+            document.getElementById('courseInputDesc').value = '';
+            document.getElementById('lessonsListInputs').innerHTML = `
+                <input type="text" class="lesson-item-input w-full p-2 bg-white border border-slate-200 rounded-lg text-xs" value="Lección 1: Primeros pasos" required>
+            `;
+            document.getElementById('courseModal').classList.remove('hidden');
+        }
+
+        function openEditCourseModal(cId) {
+            isEditingCourseId = cId;
+            const c = coursesData.find(item => item.id === cId);
+            if (!c) return;
+
+            document.getElementById('courseModalTitle').textContent = 'Editar Curso';
+            document.getElementById('courseInputTitle').value = c.title;
+            document.getElementById('courseInputCategory').value = c.category;
+            document.getElementById('courseInputDuration').value = c.duration;
+            document.getElementById('courseInputDesc').value = c.desc;
+            document.getElementById('courseInputImage').value = c.image;
+
+            const lessonsContainer = document.getElementById('lessonsListInputs');
+            lessonsContainer.innerHTML = (c.lessons || ['Lección 1']).map(l => `
+                <input type="text" class="lesson-item-input w-full p-2 bg-white border border-slate-200 rounded-lg text-xs" value="${l}" required>
+            `).join('');
+
+            document.getElementById('courseModal').classList.remove('hidden');
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModal').classList.add('hidden');
+        }
+
+        function addLessonInputRow() {
+            const container = document.getElementById('lessonsListInputs');
+            const count = container.children.length + 1;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'lesson-item-input w-full p-2 bg-white border border-slate-200 rounded-lg text-xs';
+            input.value = `Lección ${count}: Nueva lección explicativa`;
+            input.required = true;
+            container.appendChild(input);
+        }
+
+        function handleSaveCourse(e) {
+            e.preventDefault();
+            const title = document.getElementById('courseInputTitle').value;
+            const category = document.getElementById('courseInputCategory').value;
+            const duration = document.getElementById('courseInputDuration').value;
+            const desc = document.getElementById('courseInputDesc').value;
+            const image = document.getElementById('courseInputImage').value;
+
+            const lessonInputs = document.querySelectorAll('.lesson-item-input');
+            const lessons = Array.from(lessonInputs).map(i => i.value);
+
+            if (isEditingCourseId) {
+                const c = coursesData.find(item => item.id === isEditingCourseId);
+                if (c) {
+                    c.title = title;
+                    c.category = category;
+                    c.duration = duration;
+                    c.desc = desc;
+                    c.image = image;
+                    c.lessons = lessons;
+                }
+                showInfoToast('Curso actualizado con éxito.');
+            } else {
+                const newCourse = {
+                    id: 'course_' + Date.now(),
+                    title: title,
+                    category: category,
+                    desc: desc,
+                    level: 'Principiante',
+                    duration: duration,
+                    image: image,
+                    studentEnrolled: false,
+                    progressPercent: 0,
+                    status: 'Publicado',
+                    lessons: lessons
+                };
+                coursesData.unshift(newCourse);
+                showInfoToast('¡Nuevo curso publicado en la plataforma!');
+            }
+
+            closeCourseModal();
+            renderTeacherDashboard();
+            renderCoursesGrid();
+        }
+
+        function applyEncouragePreset(val) {
+            document.getElementById('textEncourageMessage').value = val;
+        }
+
+        function handleSendEncouragement(e) {
+            e.preventDefault();
+            const student = document.getElementById('selectStudentEncourage').value;
+            showInfoToast(`Mensaje de aliento enviado a ${student}.`);
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            closeLoginModal();
+            setAppState('student');
+        }
+    </script>
 </body>
 </html>
